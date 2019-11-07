@@ -56,6 +56,8 @@ class SideNav extends PureComponent<Props> {
 
     const isDefaultPage = location.split('/').includes(DEFAULT_HOME_PAGE)
 
+    const isHostPageEnabled = true
+
     return isHidden ? null : (
       <nav className="sidebar">
         <div
@@ -68,14 +70,16 @@ class SideNav extends PureComponent<Props> {
             <span className="sidebar--icon icon cubo-uniform" />
           </Link>
         </div>
-        <NavBlock
-          highlightWhen={['hosts']}
-          icon="eye"
-          link={`${sourcePrefix}/hosts`}
-          location={location}
-        >
-          <NavHeader link={`${sourcePrefix}/hosts`} title="Host List" />
-        </NavBlock>
+        {isHostPageEnabled ? (
+          <NavBlock
+            highlightWhen={['hosts']}
+            icon="eye"
+            link={`${sourcePrefix}/hosts`}
+            location={location}
+          >
+            <NavHeader link={`${sourcePrefix}/hosts`} title="Host List" />
+          </NavBlock>
+        ) : null}
         <NavBlock
           highlightWhen={['data-explorer']}
           icon="graphline-2"

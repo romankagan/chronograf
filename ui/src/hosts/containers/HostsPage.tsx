@@ -169,30 +169,41 @@ export class HostsPage extends PureComponent<Props, State> {
       'telegrafSystemInterval',
       ''
     )
+    const hostPageDisabled = getDeep<boolean>(
+      envVars,
+      'hostPageDisabled',
+      false
+    )
     const hostsError = notifyUnableToGetHosts().message
     const tempVars = generateForHosts(source)
 
     try {
-      const hostsObject = await getCpuAndLoadForHosts(
-        source.links.proxy,
-        source.telegraf,
-        telegrafSystemInterval,
-        tempVars
-      )
-      if (!hostsObject) {
-        throw new Error(hostsError)
+      if (!hostPageDisabled) {
+        const hostsObject = await getCpuAndLoadForHosts(
+          source.links.proxy,
+          source.telegraf,
+          telegrafSystemInterval,
+          tempVars
+        )
+        if (!hostsObject) {
+          throw new Error(hostsError)
+        }
+        const newHosts = await getAppsForHosts(
+          source.links.proxy,
+          hostsObject,
+          layouts,
+          source.telegraf
+        )
+        this.setState({
+          hostsObject: newHosts,
+          hostsPageStatus: RemoteDataState.Done,
+        })
+      } else {
+        this.setState({
+          hostsObject: {},
+          hostsPageStatus: RemoteDataState.Done,
+        })
       }
-      const newHosts = await getAppsForHosts(
-        source.links.proxy,
-        hostsObject,
-        layouts,
-        source.telegraf
-      )
-
-      this.setState({
-        hostsObject: newHosts,
-        hostsPageStatus: RemoteDataState.Done,
-      })
     } catch (error) {
       console.error(error)
       notify(notifyUnableToGetHosts())

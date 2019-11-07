@@ -919,4 +919,5 @@ type BuildStore interface {
 // that were set on the server
 type Environment struct {
 	TelegrafSystemInterval time.Duration `json:"telegrafSystemInterval"`
+	HostPageDisabled       bool          `json:"HostPageDisabled"`
 }
