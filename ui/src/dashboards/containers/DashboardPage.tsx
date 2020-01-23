@@ -141,7 +141,7 @@ class DashboardPage extends Component<Props, State> {
     }
   }
 
-  public async componentDidMount() {
+  public componentDidMount() {
     const {refreshRate, updateQueryParams} = this.props
     const compareOptionToRefreshRate = (r: AutoRefreshOption) =>
       r.milliseconds === refreshRate
@@ -177,7 +177,7 @@ class DashboardPage extends Component<Props, State> {
 
     window.addEventListener('resize', this.handleWindowResize, true)
 
-    await this.getDashboard()
+    this.getDashboard()
 
     this.fetchAnnotations()
     this.getDashboardLinks()
@@ -384,10 +384,10 @@ class DashboardPage extends Component<Props, State> {
     this.setState({windowHeight: window.innerHeight})
   }
 
-  private getDashboard = async () => {
+  private getDashboard = () => {
     const {dashboardID, source, getDashboardWithTemplatesAsync} = this.props
 
-    await getDashboardWithTemplatesAsync(dashboardID, source)
+    getDashboardWithTemplatesAsync(dashboardID, source)
     this.updateActiveDashboard()
   }
 

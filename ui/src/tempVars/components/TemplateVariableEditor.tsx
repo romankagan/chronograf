@@ -6,7 +6,7 @@ import React, {
   KeyboardEvent,
 } from 'react'
 import {connect} from 'react-redux'
-import _, {get} from 'lodash'
+import {get, isEmpty} from 'lodash'
 
 // Utils
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -131,6 +131,7 @@ class TemplateVariableEditor extends PureComponent<Props, State> {
       isNew,
     } = this.state
     const TemplateBuilder = this.templateBuilder
+
     return (
       <OverlayContainer maxWidth={650}>
         <OverlayHeading title={this.title}>
@@ -157,11 +158,11 @@ class TemplateVariableEditor extends PureComponent<Props, State> {
             <div className="form-group col-sm-4">
               <label>Data Source</label>
               <SourceDropdown
-                onSelectDynamicSource={this.onSelectDynamicSource}
+                onSelectDynamicSource={this.handleSelectDynamicSource}
                 sources={sources}
                 source={selectedSource}
                 isDynamicSourceSelected={isDynamicSourceSelected}
-                onChangeSource={this.handleOnChangeSource}
+                onChangeSource={this.handleChangeSource}
                 allowDynamicSource={true}
                 type={QueryType.InfluxQL}
                 widthPixels={0}
@@ -192,7 +193,7 @@ class TemplateVariableEditor extends PureComponent<Props, State> {
             <TemplateBuilder
               template={nextTemplate}
               templates={templates}
-              source={source}
+              source={selectedSource}
               onUpdateTemplate={this.handleUpdateTemplate}
               notify={notify}
               onUpdateDefaultTemplateValue={
@@ -328,7 +329,9 @@ class TemplateVariableEditor extends PureComponent<Props, State> {
       isDynamicSourceSelected,
       selectedSource,
     } = this.state
-    nextTemplate.sourceID = '0' // setting to 0 b/c an empty string returns an unparseable json error from the BE
+
+    nextTemplate.sourceID = '0'
+
     if (!isDynamicSourceSelected) {
       nextTemplate.sourceID = selectedSource.id
     }
@@ -413,11 +416,11 @@ class TemplateVariableEditor extends PureComponent<Props, State> {
     return 'Save'
   }
 
-  private onSelectDynamicSource = () => {
+  private handleSelectDynamicSource = () => {
     this.setState({isDynamicSourceSelected: true})
   }
 
-  private handleOnChangeSource = (source: Source) => {
+  private handleChangeSource = (source: Source) => {
     this.setState({isDynamicSourceSelected: false, selectedSource: source})
   }
 
