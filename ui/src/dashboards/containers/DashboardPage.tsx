@@ -385,9 +385,9 @@ class DashboardPage extends Component<Props, State> {
   }
 
   private getDashboard = () => {
-    const {dashboardID, source, getDashboardWithTemplatesAsync} = this.props
+    const {dashboardID, source, sources, getDashboardWithTemplatesAsync} = this.props
 
-    getDashboardWithTemplatesAsync(dashboardID, source)
+    getDashboardWithTemplatesAsync(dashboardID, source, sources)
     this.updateActiveDashboard()
   }
 

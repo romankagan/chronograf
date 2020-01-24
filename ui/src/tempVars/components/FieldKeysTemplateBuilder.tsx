@@ -13,6 +13,7 @@ const fetchKeys = async (source, db, measurement): Promise<string[]> => {
     query: `SHOW FIELD KEYS ON "${db}" FROM "${measurement}"`,
   })
 
+  console.log('fetchKeys', source, db)
   const {fieldSets} = parseShowFieldKeys(data)
   const fieldKeys = _.get(Object.values(fieldSets), '0', [])
 

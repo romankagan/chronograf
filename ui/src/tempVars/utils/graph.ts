@@ -7,7 +7,7 @@ import templateReplace, {
 
 import {resolveValues} from 'src/tempVars/utils'
 
-import {Template, RemoteDataState} from 'src/types'
+import {Source, Template, RemoteDataState} from 'src/types'
 
 type TemplateName = string
 
@@ -195,7 +195,7 @@ class CachingTemplateQueryFetcher implements TemplateQueryFetcher {
       return Promise.resolve([...cached])
     }
 
-    const response = await proxy({source: this.proxyUrl, query})
+    const response = await proxy({db: 'adhoc', source: this.proxyUrl, query})
     const values = parseMetaQuery(query, response.data)
 
     this.cache[this.proxyUrl][query] = values
@@ -240,6 +240,7 @@ export async function hydrateTemplate(
 
 export async function hydrateTemplates(
   templates: Template[],
+  sources: Source[],
   hydrateOptions: HydrateTemplateOptions
 ) {
   const graph = graphFromTemplates(templates)
@@ -251,10 +252,13 @@ export async function hydrateTemplates(
 
     node.status = RemoteDataState.Loading
 
+  const templateSource = sources.find(s => s.id === node.initialTemplate.sourceID)
+  const proxyUrl = templateSource ? templateSource.links.proxy : hydrateOptions.proxyUrl
+
     node.hydratedTemplate = await hydrateTemplate(
       node.initialTemplate,
       resolvedTemplates,
-      hydrateOptions
+      {...hydrateOptions, proxyUrl }
     )
 
     node.status = RemoteDataState.Done
